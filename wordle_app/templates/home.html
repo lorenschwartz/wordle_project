@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wordle Helper</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- <div id="banner-div" class="d-flex align-items-center justify-content-center text-white">
+        <img src="{% static 'images/banner.jpg' %}" class="img-fluid">
+        <h1 class="position-absolute banner-heading">Wordle Helper</h1>
+    </div> -->
+    <div id="forms-div" class="container py-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Add Word</h5>
+                <form method="post" action="{% url 'add_word' %}" id="addWordForm">
+                    {% csrf_token %}
+                    <input type="text" id="word" name="word" class="form-control my-3" placeholder="Add Word" autofocus>
+                    <input type="submit" class="btn btn-primary" value="Add Word">
+                </form>
+            </div>
+            <div class="col-md-6">
+                <h5>Search</h5>
+                <form method="post" action="{% url 'search_words' %}" id="searchForm">
+                    {% csrf_token %}
+                    <input type="text" id="search_param_starts" name="search_param_starts" class="form-control my-3" placeholder="Search 'starts with'">
+                    <input type="text" id="search_param_ends" name="search_param_ends" class="form-control my-3" placeholder="Search 'ends with'">
+                    <input type="text" id="search_param_contains" name="search_param_contains" class="form-control my-3" placeholder="Search 'contains'">
+                    <input type="text" id="search_param_excludes" name="search_param_excludes" class="form-control my-3" placeholder="Search 'excludes'">
+                    <input type="submit" class="btn btn-primary" value="Search">
+                </form>
+                {% if error_message_add %}
+                <div class="alert alert-danger mt-3">
+                    {{ error_message_add }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div id="words-div" class="container py-5">
+        {% if words %}
+            <h2>Words:</h2>
+            <ul class="list-group">
+            {% for word in words %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ word.text }}
+                    <a href="{% url 'delete_word' word.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#addWordForm').on('submit', function(e) {
+                $('#word').attr('name', 'word');
+            });
+
+            $('#searchForm').on('submit', function(e) {
+                $('#word').removeAttr('name');
+            });
+        });
+    </script>
+</body>
+</html>
